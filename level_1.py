@@ -78,7 +78,8 @@ class GameWindow(arcade.Window):
 
             self.physics_engine.update()
 
-'''class Player(arcade.Sprite):
+
+'''class Sprite(arcade.Sprite):
     def __init__ (self): 
         self.player_list = None
     def setup(self):
