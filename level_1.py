@@ -34,6 +34,8 @@ class GameWindow(arcade.Window):
         self.collect_coin_sound = arcade.load_sound("sprite/coin5.wav")
         self.jump_sound = arcade.load_sound("sprite/jump4.wav")
 
+        self.score = 0
+
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
         self.player_list = arcade.SpriteList()
@@ -44,6 +46,8 @@ class GameWindow(arcade.Window):
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 120
         self.player_list.append(self.player_sprite)
+
+        self.score = 0
 
         for x in range(0, 1250, 64):
             wall = arcade.Sprite("sprite/sand.jpg", TILE_SCALING)
@@ -79,6 +83,11 @@ class GameWindow(arcade.Window):
         self.coin_list.draw()
         self.wall_list.draw()
 
+        # coin display points
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
+                         arcade.csscolor.WHITE, 18)
+
     def on_key_press(self, key, modifiers):
         # jump
         if key == arcade.key.UP or key == arcade.key.W:
@@ -103,10 +112,10 @@ class GameWindow(arcade.Window):
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                              self.coin_list)
 
-
         for coin in coin_hit_list:
             coin.remove_from_sprite_lists()
             arcade.play_sound(self.collect_coin_sound)
+            self.score += 1
 
         # scrolling up boundary
         changed = False
