@@ -63,37 +63,23 @@ class GameWindow(arcade.Window):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
-        def on_key_release(self, key, modifiers):
+    def on_key_release(self, key, modifiers):
 
-            if key == arcade.key.UP or key == arcade.key.W:
-                self.player_sprite.change_y = 0
-            elif key == arcade.key.DOWN or key == arcade.key.S:
-                self.player_sprite.change_y = 0
-            elif key == arcade.key.LEFT or key == arcade.key.A:
-                self.player_sprite.change_x = 0
-            elif key == arcade.key.RIGHT or key == arcade.key.D:
-                self.player_sprite.change_x = 0
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = 0
 
-        def on_update(self, delta_time):
+    def on_update(self, delta_time):
 
-            self.physics_engine.update()
+        self.physics_engine.update()
 
 
-'''class Sprite(arcade.Sprite):
-    def __init__ (self): 
-        self.player_list = None
-    def setup(self):
-        
-       
-       
 
-    def on_draw(self):
-        arcade.start_render()
-
-        self.wall_list.draw()
-        self.coin_list.draw()
-
-'''
 
 
 def main():
