@@ -9,7 +9,10 @@ TILE_SCALING = .08
 # movement
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
-PLAYER_JUMP_SPEED = 15
+PLAYER_JUMP_SPEED = 17
+
+# scrolling
+TOP_VIEWPORT_MARGIN = 100
 
 
 class GameWindow(arcade.Window):
@@ -22,6 +25,9 @@ class GameWindow(arcade.Window):
         self.player_list = None
         self.player_sprite = None
         self.physics_engine = None
+
+        self.view_bottom = 0
+        self.view_left = 0
 
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
@@ -39,9 +45,11 @@ class GameWindow(arcade.Window):
             wall.center_y = 32
             self.wall_list.append(wall)
 
-        coordinate_list = [[512, 96],
-                           [256, 96],
-                           [768, 96]]
+        coordinate_list = [[256, 96],
+                           [430, 200],
+                           [870, 380],
+                           [650, 300]
+                           ]
 
         for coordinate in coordinate_list:
             wall = arcade.Sprite("sprite/seashell.png", TILE_SCALING)
@@ -77,6 +85,20 @@ class GameWindow(arcade.Window):
 
     def on_update(self, delta_time):
         self.physics_engine.update()
+
+        # scrolling up boundary
+        changed = False
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
+        if self.player_sprite.top > top_boundary:
+            self.view_bottom += self.player_sprite.top - top_boundary
+            changed = True
+
+        if changed:
+            # Do the scrolling
+            arcade.set_viewport(self.view_left,
+                                SCREEN_WIDTH + self.view_left,
+                                self.view_bottom,
+                                SCREEN_HEIGHT + self.view_bottom)
 
 
 def main():
