@@ -32,7 +32,7 @@ class GameWindow(arcade.Window):
         self.view_left = 0
 
         self.collect_coin_sound = arcade.load_sound("sounds/coin5.wav")
-        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
+        self.jump_sound = arcade.load_sound("sounds/jump4.wav")
 
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
