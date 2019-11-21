@@ -5,6 +5,7 @@ SCREEN_WIDTH = 1000
 SCREEN_TITLE = 'Endless Stairs'
 CHARACTER_SCALING = .05
 TILE_SCALING = .08
+COIN_SCALING = .5
 
 # movement
 PLAYER_MOVEMENT_SPEED = 5
@@ -21,6 +22,7 @@ class GameWindow(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.background = None
+        self.coin_list = None
         self.wall_list = None
         self.player_list = None
         self.player_sprite = None
@@ -29,10 +31,14 @@ class GameWindow(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
+        self.collect_coin_sound = arcade.load_sound("sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound("sounds/jump1.wav")
+
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
 
         self.player_sprite = arcade.Sprite("sprite/chicken.png", CHARACTER_SCALING)
         self.player_sprite.center_x = 64
@@ -44,6 +50,12 @@ class GameWindow(arcade.Window):
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
+
+        for x in range(128, 1250, 256):
+            coin = arcade.Sprite("images/items/coinGold.png", COIN_SCALING)
+            coin.center_x = x
+            coin.center_y = 96
+            self.coin_list.append(coin)
 
         coordinate_list = [[256, 96],
                            [430, 200],
@@ -64,6 +76,7 @@ class GameWindow(arcade.Window):
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.player_list.draw()
+        self.coin_list.draw()
         self.wall_list.draw()
 
     def on_key_press(self, key, modifiers):
@@ -71,6 +84,7 @@ class GameWindow(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                arcade.play_sound(self.jump_sound)
 
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
@@ -85,6 +99,14 @@ class GameWindow(arcade.Window):
 
     def on_update(self, delta_time):
         self.physics_engine.update()
+
+        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                             self.coin_list)
+
+
+        for coin in coin_hit_list:
+            coin.remove_from_sprite_lists()
+            arcade.play_sound(self.collect_coin_sound)
 
         # scrolling up boundary
         changed = False
