@@ -31,8 +31,8 @@ class GameWindow(arcade.Window):
         self.view_bottom = 0
         self.view_left = 0
 
-        self.collect_coin_sound = arcade.load_sound("sounds/coin5.wav")
-        self.jump_sound = arcade.load_sound("sounds/jump4.wav")
+        self.collect_coin_sound = arcade.load_sound("sprite/coin5.wav")
+        self.jump_sound = arcade.load_sound("sprite/jump4.wav")
 
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
@@ -52,7 +52,7 @@ class GameWindow(arcade.Window):
             self.wall_list.append(wall)
 
         for x in range(128, 1250, 256):
-            coin = arcade.Sprite("images/items/coinGold.png", COIN_SCALING)
+            coin = arcade.Sprite("sprite/coinGold.png", COIN_SCALING)
             coin.center_x = x
             coin.center_y = 96
             self.coin_list.append(coin)
