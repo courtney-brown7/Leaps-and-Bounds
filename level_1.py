@@ -1,6 +1,8 @@
 import arcade
 import os
 
+from sprite.level_2 import Level2View
+
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
 SCREEN_TITLE = 'Sea Level'
@@ -19,7 +21,7 @@ PLAYER_JUMP_SPEED = 17
 TOP_VIEWPORT_MARGIN = 100
 
 
-class Level_1_View(arcade.View):
+class Level1View(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -156,14 +158,20 @@ class Level_1_View(arcade.View):
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
+        if self.score == 4:
+            level_2_view = Level2View()
+            self.window.show_view(level_2_view)
+
+
+
 
 
 def main():
     """ Main method """
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    level_one_view = Level_1_View()
-    level_one_view.setup()
-    window.show_view(level_one_view)
+    level_1_view = Level1View()
+    level_1_view.setup()
+    window.show_view(level_1_view)
     arcade.run()
     '''
     window = GameWindow()
