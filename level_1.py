@@ -1,4 +1,5 @@
 import arcade
+import os
 
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
@@ -6,6 +7,8 @@ SCREEN_TITLE = 'Endless Stairs'
 CHARACTER_SCALING = .05
 TILE_SCALING = .08
 COIN_SCALING = .5
+SPRITE_PIXEL_SIZE = 128
+GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * CHARACTER_SCALING)
 
 # movement
 PLAYER_MOVEMENT_SPEED = 5
@@ -27,6 +30,8 @@ class GameWindow(arcade.Window):
         self.player_list = None
         self.player_sprite = None
         self.physics_engine = None
+        self.all_wall_list = None
+        self.moving_wall_list = None
 
         self.view_bottom = 0
         self.view_left = 0
@@ -41,6 +46,8 @@ class GameWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
+        self.all_wall_list = arcade.SpriteList()
+        self.moving_wall_list = arcade.SpriteList()
 
         self.player_sprite = arcade.Sprite("sprite/chicken.png", CHARACTER_SCALING)
         self.player_sprite.center_x = 64
@@ -49,30 +56,49 @@ class GameWindow(arcade.Window):
 
         self.score = 0
 
+        # sand
         for x in range(0, 1250, 64):
             wall = arcade.Sprite("sprite/sand.jpg", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
-
+            self.all_wall_list.append(wall)
+        """
+        # coin placement
         for x in range(128, 1250, 256):
             coin = arcade.Sprite("sprite/coinGold.png", COIN_SCALING)
             coin.center_x = x
             coin.center_y = 96
             self.coin_list.append(coin)
-
+        """
         coordinate_list = [[256, 96],
                            [430, 200],
                            [870, 380],
-                           [650, 300]
-                           ]
+                           [650, 300]]
 
         for coordinate in coordinate_list:
             wall = arcade.Sprite("sprite/seashell.png", TILE_SCALING)
             wall.position = coordinate
             self.wall_list.append(wall)
+            self.all_wall_list.append(wall)
+            coin = arcade.Sprite("sprite/coinGold.png", COIN_SCALING)
+            coin.center_x = coordinate[0]
+            coin.center_y = coordinate[1] + 70
+            self.coin_list.append(coin)
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.wall_list, GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                                             self.wall_list, GRAVITY, self.all_wall_list)
+
+        # moving platforms
+        wall = arcade.Sprite("sprite/seashell.png", CHARACTER_SCALING)
+        wall.center_y = 5 * GRID_PIXEL_SIZE
+        wall.center_x = 5 * GRID_PIXEL_SIZE
+        wall.boundary_top = 8 * GRID_PIXEL_SIZE
+        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
+        wall.change_y = 2 * CHARACTER_SCALING
+
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
 
     def on_draw(self):
         arcade.start_render()
@@ -82,6 +108,7 @@ class GameWindow(arcade.Window):
         self.player_list.draw()
         self.coin_list.draw()
         self.wall_list.draw()
+        self.moving_wall_list.draw()
 
         # coin display points
         score_text = f"Score: {self.score}"
@@ -111,7 +138,6 @@ class GameWindow(arcade.Window):
 
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                              self.coin_list)
-
         for coin in coin_hit_list:
             coin.remove_from_sprite_lists()
             arcade.play_sound(self.collect_coin_sound)
