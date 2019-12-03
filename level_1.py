@@ -152,9 +152,6 @@ class Level1View(arcade.View):
             self.window.show_view(level_2_view)
 
 
-
-
-
 def main():
     """ Main method """
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
