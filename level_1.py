@@ -162,11 +162,7 @@ def main():
     level_1_view.setup()
     window.show_view(level_1_view)
     arcade.run()
-    '''
-    window = GameWindow()
-    window.setup()
-    arcade.run()
-    '''
+
 
 
 if __name__ == "__main__":
