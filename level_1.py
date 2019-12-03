@@ -1,8 +1,10 @@
 import arcade
 
+from sprite.level_2 import Level2View
+
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
-SCREEN_TITLE = 'Endless Stairs'
+SCREEN_TITLE = 'Sea Level'
 CHARACTER_SCALING = .05
 TILE_SCALING = .08
 COIN_SCALING = .5
@@ -18,10 +20,10 @@ PLAYER_JUMP_SPEED = 17
 TOP_VIEWPORT_MARGIN = 100
 
 
-class GameWindow(arcade.Window):
+class Level1View(arcade.View):
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background = None
         self.coin_list = None
@@ -145,13 +147,26 @@ class GameWindow(arcade.Window):
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
+        if self.score == 4:
+            level_2_view = Level2View()
+            self.window.show_view(level_2_view)
+
+
+
 
 
 def main():
     """ Main method """
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    level_1_view = Level1View()
+    level_1_view.setup()
+    window.show_view(level_1_view)
+    arcade.run()
+    '''
     window = GameWindow()
     window.setup()
     arcade.run()
+    '''
 
 
 if __name__ == "__main__":
