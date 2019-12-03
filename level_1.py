@@ -1,6 +1,6 @@
 import arcade
 
-from sprite.level_2 import Level2View
+from level_2 import Level2View
 
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
