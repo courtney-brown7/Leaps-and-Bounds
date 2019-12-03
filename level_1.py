@@ -1,5 +1,4 @@
 import arcade
-import os
 
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
@@ -7,7 +6,7 @@ SCREEN_TITLE = 'Endless Stairs'
 CHARACTER_SCALING = .05
 TILE_SCALING = .08
 COIN_SCALING = .5
-SPRITE_PIXEL_SIZE = 128
+SPRITE_PIXEL_SIZE = 10
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * CHARACTER_SCALING)
 
 # movement
@@ -46,7 +45,6 @@ class GameWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
-        self.all_wall_list = arcade.SpriteList()
         self.moving_wall_list = arcade.SpriteList()
 
         self.player_sprite = arcade.Sprite("sprite/chicken.png", CHARACTER_SCALING)
@@ -56,21 +54,15 @@ class GameWindow(arcade.Window):
 
         self.score = 0
 
-        # sand
+        """ places the sand down as the floor """
         for x in range(0, 1250, 64):
             wall = arcade.Sprite("sprite/sand.jpg", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
-            self.all_wall_list.append(wall)
-        """
-        # coin placement
-        for x in range(128, 1250, 256):
-            coin = arcade.Sprite("sprite/coinGold.png", COIN_SCALING)
-            coin.center_x = x
-            coin.center_y = 96
-            self.coin_list.append(coin)
-        """
+
+        """using the coordinate list, places the seashells and the 
+        coins above it. """
         coordinate_list = [[256, 96],
                            [430, 200],
                            [870, 380],
@@ -80,14 +72,13 @@ class GameWindow(arcade.Window):
             wall = arcade.Sprite("sprite/seashell.png", TILE_SCALING)
             wall.position = coordinate
             self.wall_list.append(wall)
-            self.all_wall_list.append(wall)
             coin = arcade.Sprite("sprite/coinGold.png", COIN_SCALING)
             coin.center_x = coordinate[0]
             coin.center_y = coordinate[1] + 70
             self.coin_list.append(coin)
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list, GRAVITY, self.all_wall_list)
+                                                             self.wall_list, GRAVITY)
 
         # moving platforms
         wall = arcade.Sprite("sprite/seashell.png", CHARACTER_SCALING)
@@ -96,13 +87,11 @@ class GameWindow(arcade.Window):
         wall.boundary_top = 8 * GRID_PIXEL_SIZE
         wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
         wall.change_y = 2 * CHARACTER_SCALING
-
-        self.all_wall_list.append(wall)
+        self.wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
     def on_draw(self):
         arcade.start_render()
-
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.player_list.draw()
