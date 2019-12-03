@@ -1,6 +1,6 @@
 import arcade
 
-from sprite.level_2 import Level2View
+from level_2 import Level2View
 
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
@@ -159,11 +159,7 @@ def main():
     level_1_view.setup()
     window.show_view(level_1_view)
     arcade.run()
-    '''
-    window = GameWindow()
-    window.setup()
-    arcade.run()
-    '''
+
 
 
 if __name__ == "__main__":
