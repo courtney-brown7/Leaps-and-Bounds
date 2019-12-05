@@ -1,6 +1,8 @@
 import arcade
 
 from Level import LevelView
+import level_3
+
 
 CHARACTER_SCALING = 0.2
 SPRITE_SCALING = 0.1
@@ -9,6 +11,7 @@ SCREEN_WIDTH = 1000
 SCREEN_TITLE = 'Mountain Level'
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = 30
+COIN_SCALING = 0.4
 
 VIEWPORT_MARGIN = SPRITE_PIXEL_SIZE * SPRITE_SCALING
 RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
@@ -39,6 +42,15 @@ class Level2View(LevelView):
         self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
         self.player_list.append(self.player_sprite)
 
+        # coin setup
+        self.coin_list = arcade.SpriteList()
+        coin = arcade.Sprite("sprite/coinGold.png", COIN_SCALING)
+        coin.center_x = 50
+        coin.center_y = 450
+        self.coin_list.append(coin)
+
+        self.score = 0
+
         # bush floor
         for i in range(40):
             wall = arcade.Sprite("sprite/hills.png", SPRITE_SCALING)
@@ -48,10 +60,11 @@ class Level2View(LevelView):
             self.all_wall_list.append(wall)
 
         self.make_platform(3, 6, 4, 9, 7)
-        self.make_platform(5, 7, 10, 15, 6)
-        self.make_platform(7, 9, 17, 20, 10)
-        self.make_platform(4, 16, 23, 26, 0, 4, 4, 7)
-        self.make_platform(30, 7, 17, 20, 4)
+        self.make_platform(5, 7, 10, 15, 3)
+        self.make_platform(7, 9, 16, 25, 13)
+        self.make_platform(10, 16, 25, 33, 4)
+        self.make_platform(13, 16, 10, 30, 8)
+        self.make_platform(13, 10, 0, 10, 8)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -60,8 +73,7 @@ class Level2View(LevelView):
         self.view_left = 0
         self.view_bottom = 0
 
-    def make_platform(self, center_y, center_x, boundary_left, boundary_right, change_x, boundary_top=0,
-                      boundary_bottom=0, change_y=0):
+    def make_platform(self, center_y, center_x, boundary_left, boundary_right, change_x):
 
         wall = arcade.Sprite("sprite/hills.png", SPRITE_SCALING)
         wall.center_y = center_y * GRID_PIXEL_SIZE
@@ -70,12 +82,7 @@ class Level2View(LevelView):
         wall.boundary_right = boundary_right * GRID_PIXEL_SIZE
         wall.change_x = change_x * SPRITE_SCALING
 
-        if wall.boundary_top is not None:
-            wall.boundary_top = boundary_top * GRID_PIXEL_SIZE
-        if wall.boundary_bottom is not None:
-            wall.boundary_bottom = boundary_bottom * GRID_PIXEL_SIZE
-        if wall.change_y is not None:
-            wall.change_y = change_y * SPRITE_SCALING
+        # append bushes to lists
         self.all_wall_list.append(wall)
         self.moving_wall_list.append(wall)
 
@@ -86,6 +93,12 @@ class Level2View(LevelView):
         self.static_wall_list.draw()
         self.moving_wall_list.draw()
         self.player_list.draw()
+        self.coin_list.draw()
+
+        # draw coins
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
+                         arcade.csscolor.WHITE, 18)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
@@ -103,10 +116,16 @@ class Level2View(LevelView):
     def on_update(self, delta_time):
 
         self.physics_engine.update()
-
-        ''' if self.score == 4:
-            self.window.show_view(level_3.main())
-        '''
+        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                             self.coin_list)
+        for coin in coin_hit_list:
+            coin.remove_from_sprite_lists()
+            arcade.play_sound(self.collect_coin_sound)
+            self.score += 1
+            if self.score == 1:
+                level_3_view = level_3.Level3View()
+                level_3_view.setup()
+                self.window.show_view(level_3_view)
 
 
 def main():
