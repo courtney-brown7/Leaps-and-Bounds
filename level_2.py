@@ -1,5 +1,6 @@
 import arcade
 
+from Level import LevelView
 
 SPRITE_SCALING = 0.5
 SCREEN_HEIGHT = 650
@@ -16,26 +17,11 @@ JUMP_SPEED = 28 * SPRITE_SCALING
 GRAVITY = .9 * SPRITE_SCALING
 
 
-class Level2View(arcade.View):
+class Level2View(LevelView):
 
     def __init__(self):
         super().__init__()
 
-        self.background = None
-
-        self.all_sprites_list = None
-        self.all_wall_list = None
-        self.static_wall_list = None
-        self.moving_wall_list = None
-        self.player_list = None
-        self.coin_list = None
-
-        self.player_sprite = None
-        self.physics_engine = None
-        self.view_left = 0
-        self.view_bottom = 0
-        self.end_of_map = 0
-        self.game_over = False
     def on_show(self):
         self.background = arcade.load_texture("backgrounds/nature.jpg")
 
@@ -60,49 +46,10 @@ class Level2View(arcade.View):
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
 
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 3 * GRID_PIXEL_SIZE
-        wall.center_x = 3 * GRID_PIXEL_SIZE
-        wall.boundary_left = 2 * GRID_PIXEL_SIZE
-        wall.boundary_right = 5 * GRID_PIXEL_SIZE
-        wall.change_x = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 3 * GRID_PIXEL_SIZE
-        wall.center_x = 7 * GRID_PIXEL_SIZE
-        wall.boundary_left = 5 * GRID_PIXEL_SIZE
-        wall.boundary_right = 9 * GRID_PIXEL_SIZE
-        wall.change_x = -2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 5 * GRID_PIXEL_SIZE
-        wall.center_x = 5 * GRID_PIXEL_SIZE
-        wall.boundary_top = 8 * GRID_PIXEL_SIZE
-        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
-        wall.change_y = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 5 * GRID_PIXEL_SIZE
-        wall.center_x = 8 * GRID_PIXEL_SIZE
-        wall.boundary_left = 7 * GRID_PIXEL_SIZE
-        wall.boundary_right = 9 * GRID_PIXEL_SIZE
-
-        wall.boundary_top = 8 * GRID_PIXEL_SIZE
-        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
-        wall.change_x = 2 * SPRITE_SCALING
-        wall.change_y = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
+        self.make_platform(3, 3, 5, 2, -2)
+        self.make_platform(3, 7, 5, 9, -2)
+        self.make_platform(5, 5, 8, 4, 2)
+        self.make_platform(5, 8, 7, 9, 2, 8, 4, 2)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -111,7 +58,24 @@ class Level2View(arcade.View):
         self.view_left = 0
         self.view_bottom = 0
 
-        self.game_over = False
+    def make_platform(self, center_y, center_x, boundary_left, boundary_right, change_x, boundary_top=None,
+                      boundary_bottom=None, change_y=None):
+        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
+        wall.center_y = center_y * GRID_PIXEL_SIZE
+        wall.center_x = center_x * GRID_PIXEL_SIZE
+        wall.boundary_left = boundary_left * GRID_PIXEL_SIZE
+        wall.boundary_right = boundary_right * GRID_PIXEL_SIZE
+        wall.change_x = change_x * SPRITE_SCALING
+        if wall.boundary_top is not None:
+            wall.boundary_top = boundary_top * GRID_PIXEL_SIZE
+        if wall.boundary_bottom is not None:
+            wall.boundary_bottom = boundary_bottom * GRID_PIXEL_SIZE
+        wall.boundary_bottom = boundary_bottom * GRID_PIXEL_SIZE
+        if wall.change_y is not None:
+            wall.change_y = change_y * SPRITE_SCALING
+        self.all_wall_list.append(wall)
+        self.moving_wall_list.append(wall)
+
     def on_show(self):
 
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,

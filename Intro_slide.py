@@ -17,6 +17,7 @@ class IntroView(arcade.View):
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         first_level = level_1.Level1View()
+        first_level.setup()
         self.window.show_view(first_level)
 
 def main():

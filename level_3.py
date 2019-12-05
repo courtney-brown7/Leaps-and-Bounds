@@ -1,6 +1,8 @@
 import arcade
 import random
 
+from Level import LevelView
+
 SPRITE_SCALING = 0.2
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
@@ -22,21 +24,13 @@ class FallingStars(arcade.Sprite):
             self.bottom = SCREEN_HEIGHT
 
 
-class Level3View(arcade.View):
+class Level3View(LevelView):
     def __init__(self):
         super().__init__()
 
-        self.background = None
-        self.coin_list = None
-        self.player_list = None
-        self.player_sprite = None
-        self.physics_engine = None
-
-        self.score = 0
         self.level = 1
 
-        self.view_bottom = 0
-        self.view_left = 0
+
 
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -88,29 +82,7 @@ class Level3View(arcade.View):
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.WHITE, 18)
 
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-
-    def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
-
-        if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -128,7 +100,7 @@ class Level3View(arcade.View):
             self.score += 1
 
         if self.score >= 15:
-            # change view
+            pass
 
 
 

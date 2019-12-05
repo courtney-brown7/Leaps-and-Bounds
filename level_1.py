@@ -1,5 +1,7 @@
 import arcade
-import level_2
+
+from Level import LevelView
+from level_2 import Level2View
 
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
@@ -9,34 +11,17 @@ TILE_SCALING = .08
 COIN_SCALING = .5
 
 # movement
-PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
-PLAYER_JUMP_SPEED = 17
-
 # scrolling
 TOP_VIEWPORT_MARGIN = 100
 
 
-class Level1View(arcade.View):
+class Level1View(LevelView):
 
     def __init__(self):
         super().__init__()
 
-        self.background = None
-        self.coin_list = None
-        self.wall_list = None
-        self.player_list = None
-        self.player_sprite = None
-        self.physics_engine = None
-        self.all_wall_list = None
 
-        self.view_bottom = 0
-        self.view_left = 0
-
-        self.collect_coin_sound = arcade.load_sound("sprite/coin5.wav")
-        self.jump_sound = arcade.load_sound("sprite/jump4.wav")
-
-        self.score = 0
 
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
@@ -90,23 +75,7 @@ class Level1View(arcade.View):
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.WHITE, 18)
 
-    def on_key_press(self, key, modifiers):
-        # jump
-        if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
-                arcade.play_sound(self.jump_sound)
 
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-
-    def on_key_release(self, key, modifiers):
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
         self.physics_engine.update()
@@ -120,7 +89,7 @@ class Level1View(arcade.View):
             self.score += 1
 
         if self.score == 4:
-            level_2_view = level_2.Level2View()
+            level_2_view = Level2View()
             level_2_view.setup()
             self.window.show_view(level_2_view)
 
