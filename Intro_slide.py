@@ -25,7 +25,7 @@ class IntroView(arcade.View):
 
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Different Views Example")
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, "Introduction")
     window.total_score = 0
     intro_view = IntroView()
     window.show_view(intro_view)

@@ -10,6 +10,7 @@ class LevelView(arcade.View):
         super().__init__()
 
         self.static_wall_list = None
+        self.wall_list = None
         self.moving_wall_list = None
         self.background = None
         self.player_list = None

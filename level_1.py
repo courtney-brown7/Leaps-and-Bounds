@@ -12,8 +12,7 @@ COIN_SCALING = .5
 
 # movement
 GRAVITY = 1
-# scrolling
-TOP_VIEWPORT_MARGIN = 100
+
 
 
 class Level1View(LevelView):
