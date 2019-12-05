@@ -1,10 +1,9 @@
 import arcade
-import level_3
 
 SPRITE_SCALING = 0.5
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
-SCREEN_TITLE = 'Mountain Level'
+SCREEN_TITLE = 'Urban Level'
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
@@ -16,7 +15,7 @@ JUMP_SPEED = 28 * SPRITE_SCALING
 GRAVITY = .9 * SPRITE_SCALING
 
 
-class Level2View(arcade.View):
+class Level3View(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -38,7 +37,6 @@ class Level2View(arcade.View):
         self.game_over = False
 
     def setup(self):
-
         self.background = arcade.load_texture("backgrounds/nature.jpg")
         self.all_wall_list = arcade.SpriteList()
         self.static_wall_list = arcade.SpriteList()
@@ -137,7 +135,7 @@ class Level2View(arcade.View):
 
         self.physics_engine.update()
 
-        changed = Falseg
+        changed = False
         left_boundary = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
             self.view_left -= left_boundary - self.player_sprite.left
@@ -164,17 +162,14 @@ class Level2View(arcade.View):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-        if self.score == 4:
-            self.window.show_view(level_3.main())
-
 
 
 def main():
     """ Main method """
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    level_2_view = Level2View()
-    level_2_view.setup()
-    window.show_view(level_2_view)
+    level_3_view = Level3View()
+    level_3_view.setup()
+    window.show_view(level_3_view)
     arcade.run()
 
 

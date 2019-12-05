@@ -1,15 +1,12 @@
 import arcade
-
-from level_2 import Level2View
+import level_2
 
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
 SCREEN_TITLE = 'Sea Level'
-CHARACTER_SCALING = .05
+CHARACTER_SCALING = .1
 TILE_SCALING = .08
 COIN_SCALING = .5
-SPRITE_PIXEL_SIZE = 10
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * CHARACTER_SCALING)
 
 # movement
 PLAYER_MOVEMENT_SPEED = 5
@@ -32,7 +29,6 @@ class Level1View(arcade.View):
         self.player_sprite = None
         self.physics_engine = None
         self.all_wall_list = None
-        self.moving_wall_list = None
 
         self.view_bottom = 0
         self.view_left = 0
@@ -47,9 +43,8 @@ class Level1View(arcade.View):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
-        self.moving_wall_list = arcade.SpriteList()
 
-        self.player_sprite = arcade.Sprite("sprite/chicken.png", CHARACTER_SCALING)
+        self.player_sprite = arcade.Sprite("sprite/crab.png", CHARACTER_SCALING)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 120
         self.player_list.append(self.player_sprite)
@@ -82,16 +77,6 @@ class Level1View(arcade.View):
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                              self.wall_list, GRAVITY)
 
-        # moving platforms
-        wall = arcade.Sprite("sprite/seashell.png", CHARACTER_SCALING)
-        wall.center_y = 5 * GRID_PIXEL_SIZE
-        wall.center_x = 5 * GRID_PIXEL_SIZE
-        wall.boundary_top = 8 * GRID_PIXEL_SIZE
-        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
-        wall.change_y = 2 * CHARACTER_SCALING
-        self.wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
@@ -99,7 +84,6 @@ class Level1View(arcade.View):
         self.player_list.draw()
         self.coin_list.draw()
         self.wall_list.draw()
-        self.moving_wall_list.draw()
 
         # coin display points
         score_text = f"Score: {self.score}"
@@ -127,6 +111,7 @@ class Level1View(arcade.View):
     def on_update(self, delta_time):
         self.physics_engine.update()
 
+        # collision with coins- If the coin hits the sprite
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                              self.coin_list)
         for coin in coin_hit_list:
@@ -134,24 +119,8 @@ class Level1View(arcade.View):
             arcade.play_sound(self.collect_coin_sound)
             self.score += 1
 
-        # scrolling up boundary
-        changed = False
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-            changed = True
-
-        if changed:
-            # Do the scrolling
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
         if self.score == 4:
-            level_2_view = Level2View()
-            self.window.show_view(level_2_view)
-
-
+            self.window.show_view(level_2.main())
 
 
 
@@ -162,7 +131,6 @@ def main():
     level_1_view.setup()
     window.show_view(level_1_view)
     arcade.run()
-
 
 
 if __name__ == "__main__":
