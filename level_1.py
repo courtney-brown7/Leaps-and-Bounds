@@ -21,8 +21,6 @@ class Level1View(LevelView):
     def __init__(self):
         super().__init__()
 
-
-
     def setup(self):
         self.background = arcade.load_texture("backgrounds/beach.png")
         self.player_list = arcade.SpriteList()
@@ -42,7 +40,6 @@ class Level1View(LevelView):
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
-
 
         """using the coordinate list, places the seashells and the 
         coins above it. """
@@ -76,8 +73,6 @@ class Level1View(LevelView):
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.WHITE, 18)
 
-
-
     def on_update(self, delta_time):
         self.physics_engine.update()
 
@@ -93,8 +88,6 @@ class Level1View(LevelView):
             level_2_view = Level2View()
             level_2_view.setup()
             self.window.show_view(level_2_view)
-
-
 
 
 def main():

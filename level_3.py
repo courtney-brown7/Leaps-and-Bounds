@@ -31,6 +31,7 @@ class Level3View(LevelView):
         super().__init__()
 
         self.wall_list = None
+
         arcade.set_background_color(arcade.color.BLACK)
 
     def falling_stars(self):
@@ -66,7 +67,6 @@ class Level3View(LevelView):
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
-
 
         self.falling_stars()
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.wall_list,
