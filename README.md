@@ -12,7 +12,12 @@ that leads to the last level. The 3rd level is in space, and the player has to l
 -Click on the Link below to watch a recording of the game.
     https://drive.google.com/file/d/15h39zBHNMowl_jjoRTaobu5NU-EXR1Kx/view?usp=sharing
 #Installation
-
+```
+> pip install -r requirements.txt
+```
+```
+> python main_game_file.py
+```
 #Instructions
 Click anywhere on the introduction screen to start. Use the arrow keys or A,W,D keys to make the player move.
 The up arrow key and W key make the player jump upwards. The left arrow key or A key to make the player move 
