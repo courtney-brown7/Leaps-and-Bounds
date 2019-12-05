@@ -109,6 +109,8 @@ class Level2View(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
 
         self.static_wall_list.draw()
         self.moving_wall_list.draw()
@@ -131,7 +133,7 @@ class Level2View(arcade.View):
 
         self.physics_engine.update()
 
-        changed = False
+        changed = Falseg
         left_boundary = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
             self.view_left -= left_boundary - self.player_sprite.left
