@@ -2,7 +2,7 @@ import arcade
 import random
 
 from Level import LevelView
-from level_1 import COIN_SCALING
+from final_slide import FinalView
 
 TILE_SCALING = .08
 SPRITE_SCALING = 0.2
@@ -105,9 +105,9 @@ class Level3View(LevelView):
             coin.remove_from_sprite_lists()
             self.score += 1
 
-        if self.score >= 15:
-            pass
-
+        if self.score == 30:
+            final_view = FinalView()
+            self.window.show_view(final_view)
 
 def main():
     """ Main method """
