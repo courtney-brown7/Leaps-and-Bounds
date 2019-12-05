@@ -139,7 +139,7 @@ class Level2View(arcade.View):
 
         self.physics_engine.update()
 
-        changed = Falseg
+        changed = False
         left_boundary = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_boundary:
             self.view_left -= left_boundary - self.player_sprite.left

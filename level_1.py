@@ -121,6 +121,7 @@ class Level1View(arcade.View):
 
         if self.score == 4:
             level_2_view = Level2View()
+            level_2_view.setup()
             self.window.show_view(level_2_view)
 
 
