@@ -30,8 +30,6 @@ class Level3View(LevelView):
 
         self.level = 1
 
-
-
         arcade.set_background_color(arcade.color.BLACK)
 
     def falling_stars(self):
@@ -82,8 +80,6 @@ class Level3View(LevelView):
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.WHITE, 18)
 
-
-
     def on_update(self, delta_time):
         """ Movement and game logic """
 
@@ -101,7 +97,6 @@ class Level3View(LevelView):
 
         if self.score >= 15:
             pass
-
 
 
 def main():
