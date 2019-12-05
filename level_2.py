@@ -1,5 +1,5 @@
 import arcade
-import level_3
+
 
 SPRITE_SCALING = 0.5
 SCREEN_HEIGHT = 650
@@ -36,6 +36,8 @@ class Level2View(arcade.View):
         self.view_bottom = 0
         self.end_of_map = 0
         self.game_over = False
+    def on_show(self):
+        self.background = arcade.load_texture("backgrounds/nature.jpg")
 
     def setup(self):
 
@@ -165,9 +167,9 @@ class Level2View(arcade.View):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
-        if self.score == 4:
+        ''' if self.score == 4:
             self.window.show_view(level_3.main())
-
+        '''
 
 
 def main():

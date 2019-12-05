@@ -1,166 +1,134 @@
 import arcade
+import random
 
-SPRITE_SCALING = 0.5
+SPRITE_SCALING = 0.2
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
-SCREEN_TITLE = 'Urban Level'
-SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
+SCREEN_TITLE = 'Space Level'
+PLAYER_MOVEMENT_SPEED = 5
 
-VIEWPORT_MARGIN = SPRITE_PIXEL_SIZE * SPRITE_SCALING
-RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 
-MOVEMENT_SPEED = 10 * SPRITE_SCALING
-JUMP_SPEED = 28 * SPRITE_SCALING
-GRAVITY = .9 * SPRITE_SCALING
+class FallingStars(arcade.Sprite):
+    """ Simple sprite that falls down """
+
+    def update(self):
+        """ Move the coin """
+
+        # Fall down
+        self.center_y -= 2
+
+        # Did we go off the screen? If so, pop back to the top.
+        if self.top < 0:
+            self.bottom = SCREEN_HEIGHT
 
 
 class Level3View(arcade.View):
-
     def __init__(self):
         super().__init__()
 
         self.background = None
-
-        self.all_sprites_list = None
-        self.all_wall_list = None
-        self.static_wall_list = None
-        self.moving_wall_list = None
-        self.player_list = None
         self.coin_list = None
-
+        self.player_list = None
         self.player_sprite = None
         self.physics_engine = None
-        self.view_left = 0
+
+        self.score = 0
+        self.level = 1
+
         self.view_bottom = 0
-        self.end_of_map = 0
-        self.game_over = False
+        self.view_left = 0
+
+        arcade.set_background_color(arcade.color.BLACK)
+
+    def falling_stars(self):
+        for i in range(30):
+            # Create the coin instance
+            coin = FallingStars("sprite/star.png", SPRITE_SCALING / 2)
+
+            # Position the coin
+            coin.center_x = random.randrange(SCREEN_WIDTH)
+            coin.center_y = random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT * 2)
+
+            # Add the coin to the lists
+            self.coin_list.append(coin)
 
     def setup(self):
-        self.background = arcade.load_texture("backgrounds/nature.jpg")
-        self.all_wall_list = arcade.SpriteList()
-        self.static_wall_list = arcade.SpriteList()
-        self.moving_wall_list = arcade.SpriteList()
-        self.player_list = arcade.SpriteList()
+        """ Set up the game and initialize the variables. """
 
-        # sprite setup
-        self.player_sprite = arcade.Sprite("sprite/runner.png", SPRITE_SCALING)
-        self.player_sprite.center_x = 2 * GRID_PIXEL_SIZE
-        self.player_sprite.center_y = 3 * GRID_PIXEL_SIZE
+        self.score = 0
+        self.level = 1
+
+        # Sprite lists
+        self.player_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
+
+        # Set up the player
+        self.player_sprite = arcade.Sprite("sprite/ufo.png",
+                                           SPRITE_SCALING)
+        self.player_sprite.center_x = 50
+        self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
-        for i in range(30):
-            wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-            wall.bottom = 0
-            wall.center_x = i * GRID_PIXEL_SIZE
-            self.static_wall_list.append(wall)
-            self.all_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 3 * GRID_PIXEL_SIZE
-        wall.center_x = 3 * GRID_PIXEL_SIZE
-        wall.boundary_left = 2 * GRID_PIXEL_SIZE
-        wall.boundary_right = 5 * GRID_PIXEL_SIZE
-        wall.change_x = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 3 * GRID_PIXEL_SIZE
-        wall.center_x = 7 * GRID_PIXEL_SIZE
-        wall.boundary_left = 5 * GRID_PIXEL_SIZE
-        wall.boundary_right = 9 * GRID_PIXEL_SIZE
-        wall.change_x = -2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 5 * GRID_PIXEL_SIZE
-        wall.center_x = 5 * GRID_PIXEL_SIZE
-        wall.boundary_top = 8 * GRID_PIXEL_SIZE
-        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
-        wall.change_y = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        wall = arcade.Sprite("sprite/tree.png", SPRITE_SCALING)
-        wall.center_y = 5 * GRID_PIXEL_SIZE
-        wall.center_x = 8 * GRID_PIXEL_SIZE
-        wall.boundary_left = 7 * GRID_PIXEL_SIZE
-        wall.boundary_right = 9 * GRID_PIXEL_SIZE
-
-        wall.boundary_top = 8 * GRID_PIXEL_SIZE
-        wall.boundary_bottom = 4 * GRID_PIXEL_SIZE
-        wall.change_x = 2 * SPRITE_SCALING
-        wall.change_y = 2 * SPRITE_SCALING
-
-        self.all_wall_list.append(wall)
-        self.moving_wall_list.append(wall)
-
-        self.physics_engine = \
-            arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                           self.all_wall_list,
-                                           gravity_constant=GRAVITY)
-        self.view_left = 0
-        self.view_bottom = 0
-
-        self.game_over = False
+        self.falling_stars()
 
     def on_draw(self):
-        arcade.start_render()
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        """
+        Render the screen.
+        """
 
-        self.static_wall_list.draw()
-        self.moving_wall_list.draw()
-        self.player_list.draw()
+        # This command has to happen before we start drawing
+        arcade.start_render()
+
+        # Draw all the sprites.
+        self.player_sprite.draw()
+        self.coin_list.draw()
+
+        # Put the text on the screen.
+        score_text = f"Score: {self.score}"
+        arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
+                         arcade.csscolor.WHITE, 18)
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.UP:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = JUMP_SPEED
-        elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+        """Called whenever a key is pressed. """
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        """Called when the user releases a key. """
+
+        if key == arcade.key.UP or key == arcade.key.W:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.DOWN or key == arcade.key.S:
+            self.player_sprite.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.A:
+            self.player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
+        """ Movement and game logic """
 
-        self.physics_engine.update()
+        # Call update on all sprites (The sprites don't do much in this
+        # example though.)
+        self.coin_list.update()
 
-        changed = False
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
-            changed = True
+        # Generate a list of all sprites that collided with the player.
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
-        right_boundary = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-            changed = True
+        # Loop through each colliding sprite, remove it, and add to the score.
+        for coin in hit_list:
+            coin.remove_from_sprite_lists()
+            self.score += 1
 
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-            changed = True
-
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-            changed = True
-
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        if self.score >= 15:
+            # change view
 
 
 
