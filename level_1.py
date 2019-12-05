@@ -8,11 +8,10 @@ SCREEN_WIDTH = 1000
 SCREEN_TITLE = 'Sea Level'
 CHARACTER_SCALING = .1
 TILE_SCALING = .08
-COIN_SCALING = .5
+COIN_SCALING = 0.5
 
 # movement
 GRAVITY = 1
-
 
 
 class Level1View(LevelView):
@@ -33,15 +32,15 @@ class Level1View(LevelView):
 
         self.score = 0
 
-        """ places the sand down as the floor """
+        """ Places the sand as the floor """
         for x in range(0, 1250, 64):
             wall = arcade.Sprite("sprite/sand.jpg", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
 
-        """using the coordinate list, places the seashells and the 
-        coins above it. """
+        """ Using the coordinate list, places the seashells and the 
+        coins above it, dependent on its location. """
         coordinate_list = [[256, 96],
                            [430, 200],
                            [870, 380],
@@ -67,7 +66,7 @@ class Level1View(LevelView):
         self.coin_list.draw()
         self.wall_list.draw()
 
-        # coin display points
+        """Display the score from the coins"""
         score_text = f"Score: {self.score}"
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.WHITE, 18)
@@ -75,14 +74,18 @@ class Level1View(LevelView):
     def on_update(self, delta_time):
         self.physics_engine.update()
 
-        # collision with coins- If the coin hits the sprite
+        """collision with coins- If the coin hits the sprite."""
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                              self.coin_list)
+
+        """If coin collides with sprite as mentioned above, remove from list and view, and play sound.
+        Increase score by 1"""
         for coin in coin_hit_list:
             coin.remove_from_sprite_lists()
             arcade.play_sound(self.collect_coin_sound)
             self.score += 1
 
+        """if the score is equivalent to 4, switch view of window to level 2."""
         if self.score == 4:
             level_2_view = Level2View()
             level_2_view.setup()

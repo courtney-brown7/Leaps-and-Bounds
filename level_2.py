@@ -27,10 +27,10 @@ class Level2View(LevelView):
         super().__init__()
 
     def on_show(self):
+        """Show the background as the background for level 2."""
         self.background = arcade.load_texture("backgrounds/nature.jpg")
 
     def setup(self):
-
         self.all_wall_list = arcade.SpriteList()
         self.static_wall_list = arcade.SpriteList()
         self.moving_wall_list = arcade.SpriteList()
@@ -51,7 +51,7 @@ class Level2View(LevelView):
 
         self.score = 0
 
-        # bush floor
+        """Placing a floor as sprite bushes."""
         for i in range(40):
             wall = arcade.Sprite("sprite/hills.png", SPRITE_SCALING)
             wall.bottom = 0
@@ -59,6 +59,7 @@ class Level2View(LevelView):
             self.static_wall_list.append(wall)
             self.all_wall_list.append(wall)
 
+        """Create 6 moving platforms, creating arguements to pass into make_platform() function"""
         self.make_platform(3, 6, 4, 9, 7)
         self.make_platform(5, 7, 10, 15, 3)
         self.make_platform(7, 9, 16, 25, 13)
@@ -70,11 +71,13 @@ class Level2View(LevelView):
             arcade.PhysicsEnginePlatformer(self.player_sprite,
                                            self.all_wall_list,
                                            gravity_constant=GRAVITY)
+
         self.view_left = 0
         self.view_bottom = 0
 
     def make_platform(self, center_y, center_x, boundary_left, boundary_right, change_x):
-
+        """The input arguements for the moving platforms get passed into this function.
+        This function calculates how each platform should be moving"""
         wall = arcade.Sprite("sprite/hills.png", SPRITE_SCALING)
         wall.center_y = center_y * GRID_PIXEL_SIZE
         wall.center_x = center_x * GRID_PIXEL_SIZE
@@ -101,6 +104,7 @@ class Level2View(LevelView):
                          arcade.csscolor.WHITE, 18)
 
     def on_key_press(self, key, modifiers):
+        """Input from the user for moving the sprite around. """
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = JUMP_SPEED
@@ -110,6 +114,7 @@ class Level2View(LevelView):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
+        """When the user releases a key the character will return to the ground and stop moving."""
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
@@ -118,10 +123,13 @@ class Level2View(LevelView):
         self.physics_engine.update()
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                              self.coin_list)
+        """If a coin collision occurs, then remove coin and add point"""
         for coin in coin_hit_list:
             coin.remove_from_sprite_lists()
             arcade.play_sound(self.collect_coin_sound)
             self.score += 1
+
+            """If the one coin is retrieved (meaning the score is 1), change view to the level 3 screen."""
             if self.score == 1:
                 level_3_view = level_3.Level3View()
                 level_3_view.setup()
