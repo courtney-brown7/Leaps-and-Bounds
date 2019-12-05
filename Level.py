@@ -2,7 +2,7 @@ import arcade
 
 PLAYER_MOVEMENT_SPEED = 5
 
-PLAYER_JUMP_SPEED = 17
+PLAYER_JUMP_SPEED = 25
 
 
 class LevelView(arcade.View):

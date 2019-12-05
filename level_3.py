@@ -2,12 +2,14 @@ import arcade
 import random
 
 from Level import LevelView
+from level_1 import COIN_SCALING
 
+TILE_SCALING = .08
 SPRITE_SCALING = 0.2
 SCREEN_HEIGHT = 650
 SCREEN_WIDTH = 1000
 SCREEN_TITLE = 'Space Level'
-PLAYER_MOVEMENT_SPEED = 5
+GRAVITY = .7
 
 
 class FallingStars(arcade.Sprite):
@@ -28,10 +30,7 @@ class Level3View(LevelView):
     def __init__(self):
         super().__init__()
 
-        self.level = 1
-
-
-
+        self.wall_list = None
         arcade.set_background_color(arcade.color.BLACK)
 
     def falling_stars(self):
@@ -49,11 +48,9 @@ class Level3View(LevelView):
     def setup(self):
         """ Set up the game and initialize the variables. """
 
-        self.score = 0
-        self.level = 1
-
         # Sprite lists
         self.player_list = arcade.SpriteList()
+        self.wall_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
 
         # Set up the player
@@ -63,7 +60,17 @@ class Level3View(LevelView):
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
+        self.score = 0
+        for x in range(0, 1250, 64):
+            wall = arcade.Sprite("sprite/sand.jpg", TILE_SCALING)
+            wall.center_x = x
+            wall.center_y = 32
+            self.wall_list.append(wall)
+
+
         self.falling_stars()
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.wall_list,
+                                                             GRAVITY)
 
     def on_draw(self):
         """
@@ -82,10 +89,9 @@ class Level3View(LevelView):
         arcade.draw_text(score_text, 10 + self.view_left, 10 + self.view_bottom,
                          arcade.csscolor.WHITE, 18)
 
-
-
     def on_update(self, delta_time):
         """ Movement and game logic """
+        self.physics_engine.update()
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -101,7 +107,6 @@ class Level3View(LevelView):
 
         if self.score >= 15:
             pass
-
 
 
 def main():

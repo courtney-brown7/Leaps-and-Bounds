@@ -43,6 +43,7 @@ class Level1View(LevelView):
             wall.center_y = 32
             self.wall_list.append(wall)
 
+
         """using the coordinate list, places the seashells and the 
         coins above it. """
         coordinate_list = [[256, 96],
